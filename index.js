@@ -2,7 +2,7 @@ module.exports = function execPaginatePlugin (schema, options) {
   schema.query.execPaginate = function (params = {}) {
     const skip = parseInt(params.skip) || 0
     const limit = parseInt(params.limit || options.limit) || 10
-    const loadmore = !!params.loadmore
+    const loadmore = typeof params.loadmore !== 'undefined' ? params.loadmore : true
 
     return this
       .limit(limit)
@@ -10,7 +10,7 @@ module.exports = function execPaginatePlugin (schema, options) {
       .exec()
       .then(data => ({
         data,
-        loadmore,
+        loadmore: data.length && loadmore,
         skip: skip + limit
       }))
   }
